@@ -1,0 +1,1 @@
+This folder has the more advanced functions in it. These are functions that require a relatively heavy amount of math knowledge to be able to understand them, and they are pretty difficult to implement even then. As a result these should only be used by people who know more than the average starter shader dev.

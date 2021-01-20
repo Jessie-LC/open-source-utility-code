@@ -1,0 +1,1 @@
+These are functions that are relatively simple to understand. The most complicated ones only require a decent amount of math knowledge, which is expected from people who want to develop shaderpacks anyway.
