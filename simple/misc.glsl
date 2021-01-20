@@ -166,6 +166,36 @@ vec4 linearstep(in vec4 x, float low, float high) {
 
 vec2 sincos(float x) { return vec2(sin(x), cos(x)); }
 
+mat2 rotate(float a) {
+    vec2 m;
+    m.x = sin(a);
+    m.y = cos(a);
+	return mat2(m.y, -m.x,  m.x, m.y);
+}
+
+vec2 rotate(vec2 vector, float angle) {
+	vec2 sc = sincos(angle);
+	return vec2(sc.y * vector.x + sc.x * vector.y, sc.y * vector.y - sc.x * vector.x);
+}
+
+vec3 rotate(vec3 vector, vec3 axis, float angle) {
+	// https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
+	vec2 sc = sincos(angle);
+	return sc.y * vector + sc.x * cross(axis, vector) + (1.0 - sc.y) * dot(axis, vector) * axis;
+}
+
+vec3 rotate(vec3 vector, vec3 from, vec3 to) {
+	// where "from" and "to" are two unit vectors determining how far to rotate
+	// adapted version of https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
+
+	float cosTheta = dot(from, to);
+	if (abs(cosTheta) >= 0.9999) { return cosTheta < 0.0 ? -vector : vector; }
+	vec3 axis = normalize(cross(from, to));
+
+	vec2 sc = vec2(sqrt(1.0 - cosTheta * cosTheta), cosTheta);
+	return sc.y * vector + sc.x * cross(axis, vector) + (1.0 - sc.y) * dot(axis, vector) * axis;
+}
+
 vec2 circleMap(in float index, in float count) {
     float goldenAngle = tau / ((sqrt(5.0) * 0.5 + 0.5) + 1.0);
     return vec2(cos(index * goldenAngle), sin(index * goldenAngle)) * sqrt(index / count);
@@ -184,10 +214,12 @@ vec3 generateUnitVector(vec2 hash) {
     return vec3(vec2(sin(hash.x), cos(hash.x)) * sqrt(1.0 - hash.y * hash.y), hash.y);
 }
 
-vec3 generateCosineVector(vec3 vector, vec2 xy) {
-    vec3 dir = generateUnitVector(xy);
-
-    return fNormalize(vector + dir);
+vec3 generateConeVector(vec3 vector, vec2 xy, float angle) {
+    xy.x *= radians(360.0);
+    float cosAngle = cos(angle);
+    xy.y = xy.y * (1.0 - cosAngle) + cosAngle;
+    vec3 sphereCap = vec3(vec2(cos(xy.x), sin(xy.x)) * sqrt(1.0 - xy.y * xy.y), xy.y);
+    return Rotate(sphereCap, vector, vec3(0, 0, 1));
 }
 
 vec3 generateConeVector(vec3 vector, vec2 xy, float angle) {
