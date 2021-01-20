@@ -219,7 +219,7 @@ vec3 generateConeVector(vec3 vector, vec2 xy, float angle) {
     float cosAngle = cos(angle);
     xy.y = xy.y * (1.0 - cosAngle) + cosAngle;
     vec3 sphereCap = vec3(vec2(cos(xy.x), sin(xy.x)) * sqrt(1.0 - xy.y * xy.y), xy.y);
-    return Rotate(sphereCap, vector, vec3(0, 0, 1));
+    return Rotate(sphereCap, vec3(0, 0, 1), vector);
 }
 
 vec3 generateConeVector(vec3 vector, vec2 xy, float angle) {
