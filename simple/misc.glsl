@@ -201,14 +201,6 @@ vec2 circleMap(in float index, in float count) {
     return vec2(cos(index * goldenAngle), sin(index * goldenAngle)) * sqrt(index / count);
 }
 
-vec2 circleMap(in float point) {
-    return vec2(cos(point), sin(point));
-}
-
-vec2 spiralPoint(float angle, float scale) {
-	return vec2(sin(angle), cos(angle)) * pow(angle / scale, 1.0 / (sqrt(5.0) * 0.5 + 0.5));
-}
-
 vec3 generateUnitVector(vec2 hash) {
     hash.x *= tau; hash.y = hash.y * 2.0 - 1.0;
     return vec3(vec2(sin(hash.x), cos(hash.x)) * sqrt(1.0 - hash.y * hash.y), hash.y);
@@ -219,12 +211,5 @@ vec3 generateConeVector(vec3 vector, vec2 xy, float angle) {
     float cosAngle = cos(angle);
     xy.y = xy.y * (1.0 - cosAngle) + cosAngle;
     vec3 sphereCap = vec3(vec2(cos(xy.x), sin(xy.x)) * sqrt(1.0 - xy.y * xy.y), xy.y);
-    return Rotate(sphereCap, vec3(0, 0, 1), vector);
-}
-
-vec3 generateConeVector(vec3 vector, vec2 xy, float angle) {
-	vec3 dir = generateUnitVector(xy);
-	float noiseAngle = acos(dot(dir, vector)) * (angle / pi);
-
-	return sin(noiseAngle) * normalize(cross(vector, dir)) + cos(noiseAngle) * vector;
+    return rotate(sphereCap, vec3(0, 0, 1), vector);
 }
